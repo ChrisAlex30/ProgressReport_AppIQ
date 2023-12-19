@@ -32,7 +32,7 @@ app.use(express.static("public"));
 
 // Public Routes
 
-app.post("/api/att/logout", async (req, res) => {
+app.post("/api/progress/logout", async (req, res) => {
 
     try{ 
       res.cookie("uid","")
@@ -61,7 +61,7 @@ app.post("/api/progress/login", async (req, res) => {
                 res.status(201).json({msg:'success',role:'admin'})               
             }
             else {
-                const token = jwt.sign({ name,role:'teacher',Subjectcode:teacher.Subjectcode}, process.env.SECRET_KEY, { expiresIn: '1h' });
+                const token = jwt.sign({ name,role:'teacher',Subjectcode:user.Subjectcode}, process.env.SECRET_KEY, { expiresIn: '1h' });
                 res.cookie("uid",token)
                 res.status(201).json({msg:'success',role:'teacher'})               
             }
@@ -528,6 +528,88 @@ app.put("/api/progress/revertdeletedstudents",authenticateJwt, async (req, res) 
 
 
 
+                                                    // TEACHERS Routes//
+                                                    
+//get students of a subject teacher class and month wise
+app.get("/api/progress/studentdetails/:month/:classname",authenticateJwt, async (req, res) => {
+    try {
+        const role=req.header.role
+        if(role!=="teacher"){
+            res.status(401).json({msg:"NOT AUTHORIZED"});
+            return
+        }
+        let { month, classname } = req.params;
+        let subjectcode=req.header.Subjectcode 
+        
+        if(!month || !classname){
+            res.status(401).json({msg:"Please select the required fields. !!"});
+            return
+        }
+        
+        let users = await studentmodel.find(
+            {                
+                status:"1",
+                marks:{$elemMatch:{subjectname: subjectcode,subjectstatus: "1"}},
+                classname: classname
+            }).select({_id: 1,name:1,className:1,doj:1,marks:{$elemMatch:{subjectname: subjectcode,subjectstatus: "1"}}})
+        if(users && users.length!==0){
+           users= users.map(user=>{
+           const mon= user.marks[0].months.filter(element=>element.month===month)
+           return {
+            id:user._id ,
+            name:user.name,
+            month:mon        
+           }
+           })                  
+        }
+        res.status(201).json(users);
+    } 
+    catch (err) {
+        console.log(err);
+        res.status(500).json({msg:'Server Error'})  
+    }
+});
+
+
+//update student's test marks(T1 T2 and T3) of a subject for a month 
+app.put("/api/progress/updatestudentdata/:id", async (req, res) => {
+    const { T1,T2,T3, month } = req.body
+    const { id } = req.params;
+    const subjectcode=req.header.Subjectcode
+
+    if(!id || !month || !T1 || !T2 || !T3){
+        res.status(401).json({msg:"Please select the required fields. !!"});
+        return
+    }
+
+    try {
+        await studentmodel.updateOne(
+            {
+                 _id: id,
+                "marks": {
+                    $elemMatch: {
+                        "subjectname": subjectcode,
+                    }
+                }
+            },
+            {
+                $set: {
+                    "marks.$.months.$[elem].T1": T1,
+                    "marks.$.months.$[elem].T2": T2,
+                    "marks.$.months.$[elem].T3": T3
+                }
+            }, {
+            arrayFilters: [{ "elem.month": month }]
+        }
+        )
+
+        res.status(201).json({msg:'Student Marks Updated'});
+    }
+    catch (e) {
+        console.log(e);
+        res.status(500).json({msg:'Server Error'}) 
+    }
+})
 
 
 
