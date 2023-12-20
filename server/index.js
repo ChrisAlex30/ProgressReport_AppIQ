@@ -569,7 +569,10 @@ app.put("/api/progress/updatestudentdata/:id", async (req, res) => {
     const { id } = req.params;
     const subjectcode=req.header.Subjectcode
 
-    if(!id || !month || !T1 || !T2 || !T3){
+    console.log(req.body);
+    console.log(req.params);
+
+    if(!id || !month){
         res.status(401).json({msg:"Please select the required fields. !!"});
         return
     }

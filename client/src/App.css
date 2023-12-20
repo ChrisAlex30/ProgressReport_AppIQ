@@ -7,6 +7,21 @@
   list-style: none;
   text-decoration: none;
 }
+dialog{
+  margin: auto;  
+  width: 600px;
+  height: 500px;
+  border: 1px solid;
+}
+
+.modal-form{
+  text-align: center;
+  margin-top: 50px;
+}
+.modal-lbl{
+  font-weight: 600;
+    display: block;
+}
 
 .w-50{
   width: 50% !important;
@@ -36,6 +51,10 @@
   font-weight: bold;
   cursor: pointer;
   color: #FAF6F0;
+}
+
+.logo:hover{
+  color: #9EC8B9;
 }
 .main-head{
 text-align: center;
