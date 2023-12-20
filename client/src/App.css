@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Poppins:wght@200;300;600;800&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,800;0,900;1,600&display=swap');
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  list-style: none;
+  text-decoration: none;
+}
+
+.w-50{
+  width: 50% !important;
+ }
+ .w-60{
+  width: 60% !important;
+ }
+ .w-70{
+  width: 70% !important;
+ }
+ .w-75{
+  width: 75% !important;
+ }
+ .w-80{
+  width: 80% !important;
+ }
+ .w-90{
+  width: 90% !important;
+ }
+ .w-100{
+  width: 100% !important;
+ }
+
+
+ .logo{
+  font-size: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #FAF6F0;
+}
+.main-head{
+text-align: center;
+background-color: #092635;
+padding: 1rem;
+width: 100%;
+}
+.navbar{
+align-items: center;
+background-color: #092635;
+display: flex;
+justify-content: space-between;
+padding: 1rem;
+}
+
+.inp {
+  width: 90%;
+  padding: 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: medium;
+  margin-bottom: 10px;
+}
+.inp-dd {
+  width: 90%;
+  padding: 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: medium;
+  margin-bottom: 10px;
+
+}
+.lbl{
+    font-weight: 600;
+    display: block;
+    text-align: left;
+    padding: 3px 30px ;
+}
+.form-lbl{
+  font-weight: 600;
+  display: block;
+  text-align: left;
+}
+label{
+  margin: 0 3px;
+}
+
+.login-sec{
+  width: 550px;
+  margin: auto;
+  border: 1px solid;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.form-heading{
+  font-size: x-large;
+  font-weight: bold;
+  background: #5C8374;
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+
+
+.admin-form-heading{
+  font-size: x-large;
+  font-weight: bold;
+  background: #9EC8B9;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 30%;
+  background: #9EC8B9;
+  border-radius: 25px;
+}
+
+/* SECTIONS */
+
+.bckg{
+  width: 90%;
+  background-color: #092635;
+  min-height: 600px;
+  padding: 20px;
+  margin: auto;
+  border-radius: .5rem;
+  margin-top: 10px;
+  color: #FAF6F0;
+}
+
+.service-section{
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.service-form{
+  flex-grow: 3;
+}
+.service-table{
+  flex-grow: 7;
+}
+
+.tab{
+  overflow: auto;
+}
+table{
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+td{
+  padding: 8px;
+  border: 1px solid black;
+  font-size: 14px;  
+  font-family: 'Lora', serif;
+  font-weight: 600;
+}
+th{
+  padding: 8px;
+  border: 1px solid black;
+}
+
+
+/* BUTTONS */
+.btn{
+  padding: 10px 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 15px;
+  margin: 1px;
+  background-color: #9EC8B9;
+}
+.btn:hover{
+  background-color: #5C8374;
+}
+
+.tbl-btn{
+  padding: 3px;
+  margin-right: 3px;
+  cursor: pointer;
+  border-radius: 5px; 
+  width: 30%; 
+}
+
+@media screen and (max-width: 768px) {
+  .login-sec{
+      width: 90%;
+  }
+
+  .main-head{
+    width: initial;
+  }
+
+  .tbl-btn{
+    width: 100%;
+
+  }
+
+  .teacher-section{
+    width: 100%;
+  }
+}
+

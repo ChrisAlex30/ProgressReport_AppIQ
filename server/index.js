@@ -19,7 +19,7 @@ app.listen(port, () => {
 });
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(cors())
 
 app.use(cookieParser()); 
 
@@ -57,13 +57,11 @@ app.post("/api/progress/login", async (req, res) => {
         if (user) {
             if (user.name == "admin") {
                 const token = jwt.sign({ name,role:'admin' }, process.env.SECRET_KEY, { expiresIn: '1h' });
-                res.cookie("uid",token)
-                res.status(201).json({msg:'success',role:'admin'})               
+                res.status(201).json({msg:'success',role:'admin',uid:token})               
             }
             else {
                 const token = jwt.sign({ name,role:'teacher',Subjectcode:user.Subjectcode}, process.env.SECRET_KEY, { expiresIn: '1h' });
-                res.cookie("uid",token)
-                res.status(201).json({msg:'success',role:'teacher'})               
+                res.status(201).json({msg:'success',role:'teacher',uid:token}) 
             }
         }
         else {
@@ -77,11 +75,11 @@ app.post("/api/progress/login", async (req, res) => {
 })
 
 const authenticateJwt = (req, res, next) => {
-    const authHeader = req.cookies.uid;
+    const authHeader = req.headers.authorization;
     if (authHeader) {    
       jwt.verify(authHeader, process.env.SECRET_KEY, (err, username) => {
         if (err) {
-          return res.sendStatus(403);
+            res.status(403).json({msg:"NOT AUTHORIZED"});
            }  
         else{
           // console.log(username);
@@ -98,7 +96,7 @@ const authenticateJwt = (req, res, next) => {
           }
       });
     } else {
-      res.sendStatus(401);
+        res.status(403).json({msg:"NOT AUTHORIZED"});
     }
   };
 
@@ -114,7 +112,7 @@ app.get("/api/progress/getstudents",authenticateJwt, async (req, res) => {
         res.status(401).json({msg:"NOT AUTHORIZED"});
         return
         }
-        const users = await studentmodel.find({ status: "1" });
+        const users = await studentmodel.find({ status: "1" }).select({name:1,classname:1,DOJ:1,Subject:1});
         res.status(201).json(users)
     } catch (err) {
         console.log(err);
@@ -312,7 +310,7 @@ app.put("/api/progress/updatestudent/:id",authenticateJwt, async function (req, 
             );
             // add pre existing data
 
-            studentmodel.updateMany(
+             await studentmodel.updateMany(
                 { _id: id },
                 {
                     $set: {
@@ -327,13 +325,7 @@ app.put("/api/progress/updatestudent/:id",authenticateJwt, async function (req, 
                         }
                     ]
                 }
-            ).then(result => {
-                console.log(result.nModified + " document(s) updated");
-                console.log("Selected elements:");
-                console.log(result);
-            }).catch(err => {
-                console.log('err' + err);
-            });
+            )
 
             //add new data
 
@@ -503,16 +495,15 @@ app.put("/api/progress/revertdeletedstudents",authenticateJwt, async (req, res) 
         return
         }
 
-        let { sIds } = req.body;
-        if (!sIds) {
-            res.status(401).send("please select some students !!!");
+        let { SIds } = req.body;
+        if (!SIds) {
+            res.status(401).json({msg:"please select some students !!!"});
             return;
         }
 
         
-        let strid = sIds.split(",")
         await studentmodel.updateMany(
-            { _id: { $in: strid } },
+            { _id: { $in: SIds } },
             {
                 $set: {
                     "status": '1'
@@ -552,6 +543,7 @@ app.get("/api/progress/studentdetails/:month/:classname",authenticateJwt, async 
                 marks:{$elemMatch:{subjectname: subjectcode,subjectstatus: "1"}},
                 classname: classname
             }).select({_id: 1,name:1,className:1,doj:1,marks:{$elemMatch:{subjectname: subjectcode,subjectstatus: "1"}}})
+            
         if(users && users.length!==0){
            users= users.map(user=>{
            const mon= user.marks[0].months.filter(element=>element.month===month)
